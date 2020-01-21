@@ -30,6 +30,7 @@ gast==0.2.2
 google-auth==1.10.1
 google-auth-oauthlib==0.4.1
 google-pasta==0.1.8
+gpflow==1.5.1
 grpcio==1.26.0
 h5py==2.10.0
 hypothesis==5.2.0
@@ -59,6 +60,7 @@ matplotlib==3.1.2
 mistune==0.8.4
 mock==3.0.5
 more-itertools==8.1.0
+multipledispatch==0.6.0
 nbconvert==5.6.1
 nbformat==5.0.3
 notebook==6.0.2
@@ -66,6 +68,7 @@ numexpr==2.7.1
 numpy==1.18.1
 oauthlib==3.1.0
 opt-einsum==3.1.0
+packaging==20.0
 pandas==0.25.3
 pandocfilters==1.4.2
 parso==0.5.2
@@ -74,11 +77,13 @@ pexpect==4.7.0
 pickleshare==0.7.5
 Pillow==7.0.0
 pip-tools==4.3.0
+pluggy==0.13.1
 poyo==0.5.0
 prometheus-client==0.7.1
 prompt-toolkit==3.0.2
 protobuf==3.11.2
 ptyprocess==0.6.0
+py==1.8.1
 pyarrow==0.15.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -88,6 +93,7 @@ pyparsing==2.4.6
 pyro-api==0.1.1
 pyro-ppl==1.2.0
 pyrsistent==0.15.7
+pytest==5.3.4
 python-dateutil==2.8.1
 python-json-logger==0.1.11
 pytz==2019.3
