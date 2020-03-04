@@ -1,33 +1,51 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import pickle
 import seaborn as sns
-from kedro_app.nodes.gp_regression import  gp_conditional
-st.title('Exploration of Gaussian Processes')
+from gp_regression import  gp_conditional, visualize_gp, kernel_rbf_full, plot_gp_samples, gp_prior_draw
 
+st.title('Exploration of Gaussian Processes')
+st.text("""This app is meant to show how sampling can be done with GPs, 
+and how inferences about posterior functions can differ based on kernel functions""")
 
 f_true = lambda x: np.sin(x*(2*np.pi))
-y_true = f_true(x)
 f_obs = lambda x: np.sin(x*(2*np.pi)) + 0.2*np.random.normal(size=x.shape)
-y_obs = f_obs(x)
-
+obs_location_file = 'obs_locations.pkl'
 @st.cache
 def create_data(npoints = 200):
     return np.linspace(-1,1,200)
 
 data = create_data()
 
-if st.checkbox('Show noiseless function'):
-    st.subheader('True Function')
-    sns.lineplot(x=data, y=f_true(data))
-    st.pyplot()
-x_new = st.number_input('Where should we measure?')
-# st.subheader('Number of pickups by hour:')
-# hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
-# st.bar_chart(hist_values)
+# Now, let's sample, add to x_obs, then rerun and keep vizualizing.
+# Once we iron out this part of the app, merge to master, then branch and
+# make second "release"
+# Eventually, define a drop down for different choices of kernel functions.
+try:
+    with open(obs_location_file, 'rb') as file_:
+        obs_locations = pickle.load(file_)
+except FileNotFoundError:
+    obs_locations = []
 
-# hour_to_filter = st.slider('hour', 0, 23, 17)
-# filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
+x_new = st.number_input('Where should we measure? Please enter an x-coordinate value to take a measurement [-1,1]',
+min_value=-1.,
+max_value=1.,
+value=0.,
+step=0.01)
+obs_locations.append(x_new)
+st.text("""Let's see some prior draws""")
+prior_draws = gp_prior_draw(kernel_func=kernel_rbf_full, domain = data, n_samples=50)
+st.altair_chart(plot_gp_samples(data, prior_draws))
+st.text("""Now, condition on observations (by default at 0)""")
+# By default, number_input always returns default value of 0
+# If I have data, let's condition and go
 
-# st.subheader('Map of all pickups at %s:00'% hour_to_filter)
-# st.map(filtered_data)
+# Condition and Vizualize
+alt_plt = visualize_gp(x_obs = np.array(obs_locations), x_coords=data, kernel_func=kernel_rbf_full, f_true=f_true,f_obs=f_obs)
+st.altair_chart(alt_plt)
+with open(obs_location_file, 'wb') as file_:
+    if st.button('Clear Obs'):
+        pickle.dump([], file=file_)    
+    else:
+        pickle.dump(obs_locations, file=file_)
