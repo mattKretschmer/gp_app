@@ -2,12 +2,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import seaborn as sns
-
+from kedro_app.nodes.gp_regression import  gp_conditional
 st.title('Exploration of Gaussian Processes')
 
-DATE_COLUMN = 'date/time'
+
 f_true = lambda x: np.sin(x*(2*np.pi))
-f_obs = lambda x: f_true(x) + 0.2*np.random.normal(size=x.shape)
+y_true = f_true(x)
+f_obs = lambda x: np.sin(x*(2*np.pi)) + 0.2*np.random.normal(size=x.shape)
+y_obs = f_obs(x)
 
 @st.cache
 def create_data(npoints = 200):
